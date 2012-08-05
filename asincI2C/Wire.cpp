@@ -1,7 +1,10 @@
 /*
   TwoWire.cpp - TWI/I2C library for Wiring & Arduino
   Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
-
+  
+  Modifierd by Mauro Mombelli (aka lesto) - 2012
+    now the library should has asincronus read/write.
+    
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
