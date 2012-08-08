@@ -72,9 +72,11 @@ static boolean twi_receiving, twi_writing;
 void twi_init(boolean pullUp, boolean fastI2C)
 {
   unsigned long frequency = 100000;
-
-  if (fastI2C)
+  if (fastI2C){
     frequency = 400000;
+  }else{
+    frequency = 100000;
+  }
   
   // initialize state
   twi_state = TWI_READY;

@@ -30,22 +30,22 @@ char DLPF_FS_SEL_1 = 1<<4;
 //I2C devices each have an address. The address is defined in the datasheet for the device. The ITG-3200 breakout board can have different address depending on how
 //the jumper on top of the board is configured. By default, the jumper is connected to the VDD pin. When the jumper is connected to the VDD pin the I2C address
 //is 0x69.
-char itgAddress = 0x69;
+char itgAddress = 0xD0;
 
 
-		//In the setup section of the sketch the serial port will be configured, the i2c communication will be initialized, and the itg-3200 will be configured.
+//In the setup section of the sketch the serial port will be configured, the i2c communication will be initialized, and the itg-3200 will be configured.
 void setup()
 {
   //Create a serial connection using a 9600bps baud rate.
   Serial.begin(9600);
-  delay(1000);
+  delay(2000);
   //Initialize the I2C communication. This will set the Arduino up as the 'Master' device.
     Serial.println('1');
   Wire.begin();
     Serial.println('2');
   //Read the WHO_AM_I register and print the result
   char id=0; 
-  id = itgRead(itgAddress, 0x00);  
+  //id = itgRead(itgAddress, 0x00);  
   Serial.print("ID: ");
   Serial.println(id, HEX);
   //Configure the gyroscope
@@ -53,7 +53,7 @@ void setup()
   itgWrite(itgAddress, DLPF_FS, (DLPF_FS_SEL_0|DLPF_FS_SEL_1|DLPF_CFG_0));
     Serial.println('3');
   //Set the sample rate to 100 hz
-  itgWrite(itgAddress, SMPLRT_DIV, 9);
+  //itgWrite(itgAddress, SMPLRT_DIV, 9);
     Serial.println('4');
 }
 
@@ -79,7 +79,7 @@ void loop()
   Serial.println(zRate);  
 
   //Wait 10ms before reading the values again. (Remember, the output rate was set to 100hz and 1reading per 10ms = 100hz.)
-  delay(10);
+  delay(1000);
 }
 
 		//This function will write a value to a register on the itg-3200.
@@ -125,6 +125,9 @@ unsigned char itgRead(char address, char registerAddress)
   Wire.requestFrom(address, 1);
 //  Serial.println("r5");
   //Wait for a response from the I2C device
+  while ( !Wire.available() ){
+    continue;
+  }
   if(Wire.available()){
  //   Serial.println("r6");
     //Save the data sent from the I2C device
