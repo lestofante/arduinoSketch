@@ -26,7 +26,7 @@
 
 // This example code is in the public domain.
 
-#include "Wire.h"
+#include <Wire.h>
 
 #define DEVICE (0x53) // Device address as specified in data sheet 
 
@@ -60,7 +60,6 @@ void loop()
   delay(500); // only read every 0,5 seconds
 }
 
-unsigned long readC, loopC, lastUp = millis();
 void readAccel() {
   uint8_t howManyBytesToRead = 6;
   readFrom( DATAX0, howManyBytesToRead, _buff); //read the acceleration data from the ADXL345
@@ -70,22 +69,12 @@ void readAccel() {
   int x = (((int)_buff[1]) << 8) | _buff[0];   
   int y = (((int)_buff[3]) << 8) | _buff[2];
   int z = (((int)_buff[5]) << 8) | _buff[4];
-  if lastUp + 1000 >= millis(){
-    Serial.print("x: ");
-    Serial.print( x );
-    Serial.print(" y: ");
-    Serial.print( y );
-    Serial.print(" z: ");
-    Serial.println( z );
-    Serial.print("loopC: ");
-    Serial.println( loopC );
-    loopC=0;
-    Serial.print("readC: ");
-    Serial.println( readC );
-    readC=0;
-  }
-  loopC+=1;
-  readC+=1;
+  Serial.print("x: ");
+  Serial.print( x );
+  Serial.print(" y: ");
+  Serial.print( y );
+  Serial.print(" z: ");
+  Serial.println( z );
 }
 
 void writeTo(byte address, byte val) {
