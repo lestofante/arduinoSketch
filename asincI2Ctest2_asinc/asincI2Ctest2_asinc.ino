@@ -55,16 +55,12 @@ void setup()
 }
 
 unsigned long readC, loopC, lastUp = millis();
+int stato = 0, lettura = 0, x, y, z;
 void loop() {
   uint8_t howManyBytesToRead = 6;
   readFrom( DATAX0, howManyBytesToRead, _buff); //read the acceleration data from the ADXL345
-
-  // each axis reading comes in 10 bit resolution, ie 2 bytes.  Least Significat Byte first!!
-  // thus we are converting both bytes in to one int
-  int x = (((int)_buff[1]) << 8) | _buff[0];   
-  int y = (((int)_buff[3]) << 8) | _buff[2];
-  int z = (((int)_buff[5]) << 8) | _buff[4];
-  if lastUp + 1000 >= millis(){
+  
+  if (lastUp + 1000 <= millis()){
     Serial.print("x: ");
     Serial.print( x );
     Serial.print(" y: ");
@@ -76,10 +72,18 @@ void loop() {
     loopC=0;
     Serial.print("readC: ");
     Serial.println( readC );
+    
+    Serial.print("status: ");
+    Serial.println( stato );
+    
     readC=0;
+    lastUp=millis();
   }
   loopC+=1;
-  readC+=1;
+  if (lettura){
+    readC+=1;
+    lettura=0;
+  }
 }
 
 void writeTo(byte address, byte val) {
@@ -91,18 +95,25 @@ void writeTo(byte address, byte val) {
 
 // Reads num bytes starting from address register on device in to _buff array
 void readFrom(byte address, int num, byte _buff[]) {
-  Wire.beginTransmission(DEVICE); // start transmission to device 
-  Wire.write(address);             // sends address to read from
-  Wire.endTransmission();         // end transmission
-
-  Wire.beginTransmission(DEVICE); // start transmission to device
-  Wire.requestFrom(DEVICE, num);    // request 6 bytes from device
-
-  int i = 0;
-  while(Wire.available())         // device may send less than requested (abnormal)
-  { 
-    _buff[i] = Wire.read();    // receive a byte
-    i++;
+  if ( stato == 0 && Wire.asincBeginTransmission(DEVICE) ){ // start transmission to device 
+    Wire.write(address);             // sends address to read from
+    Wire.asincEndTransmission(true);         // end transmission
+    stato = 1;
   }
-  Wire.endTransmission();         // end transmission
+
+  if ( stato == 1 && Wire.asincBeginTransmission(DEVICE) ){ // start transmission to device
+    Wire.asincRequestFrom(DEVICE, num);    // request 6 bytes from device
+    stato = 2;
+  }
+
+  if (stato == 2 && Wire.asincReady(num-1) ){
+    Wire.asincRead(_buff, num-1); // receive a bytes
+    Wire.asincEndTransmission(true);         // end transmission
+    lettura = 1;
+    stato = 0;
+//    Serial.print("lettura ");
+    x = (((int)_buff[1]) << 8) | _buff[0];   
+    y = (((int)_buff[3]) << 8) | _buff[2];
+    z = (((int)_buff[5]) << 8) | _buff[4];
+  }
 }
