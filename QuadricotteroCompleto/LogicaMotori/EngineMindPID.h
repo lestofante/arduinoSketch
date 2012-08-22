@@ -1,0 +1,29 @@
+#ifndef EngineMindPID_h
+#define EngineMindPID_h
+
+#include <Servo.h>
+#include <PID/PID.h>
+
+#define motore1PWMPin 3
+#define motore2PWMPin 9
+#define motore3PWMPin 10
+#define motore4PWMPin 11
+
+static int MIN_ENGINE = 20;
+static int MAX_ENGINE = 70;
+
+class EngineMind{
+  public:
+    void start();
+    void update(float[], float[], int);
+    void debug();
+    void brake();
+    void setP(float);
+    void setI(float);
+    void setD(float);
+  private:
+    Servo motori[4];
+    float valoreReale[4];
+    PID pidMotori[2];
+};
+#endif

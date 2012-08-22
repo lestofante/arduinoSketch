@@ -30,7 +30,7 @@ char DLPF_FS_SEL_1 = 1<<4;
 //I2C devices each have an address. The address is defined in the datasheet for the device. The ITG-3200 breakout board can have different address depending on how
 //the jumper on top of the board is configured. By default, the jumper is connected to the VDD pin. When the jumper is connected to the VDD pin the I2C address
 //is 0x69.
-char itgAddress = 0x69;
+char itgAddress = 0x68;
 
 
 		//In the setup section of the sketch the serial port will be configured, the i2c communication will be initialized, and the itg-3200 will be configured.

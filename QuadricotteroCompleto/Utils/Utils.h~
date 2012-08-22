@@ -1,0 +1,15 @@
+#ifndef Utils_h
+#define Utils_h
+
+#include "WProgram.h"
+
+#define NORMALIZE_PRECISION 10000.0
+
+class Utils{
+  public:
+    float mapFloat(float, float, float, float, float);
+    float normalize(float);//return the input in range from -PI to + PI
+   private:
+    static const int NORMALIZE_PI = PI*NORMALIZE_PRECISION;
+};
+#endif

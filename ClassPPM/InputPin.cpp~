@@ -1,0 +1,22 @@
+#include "InputPin.h"
+
+InputPin(int pinNumber){
+  InputPin(pinNumber, false);
+}
+  
+InputPin(int pinNumber, boolean startingSignal){
+  pin = pinNumber;
+  signal = startingSignal;
+  signalLenght=0;
+  signalStart = micros();
+}
+  
+~InputPin(){
+}
+  
+void update(){
+  if ( digitalRead(pin)!=signal ){
+    signal=!signal;
+  }
+    
+}

@@ -1,0 +1,16 @@
+#ifndef InputPin_h
+#define InputPin_h
+
+
+#include "WProgram.h"
+
+class InputPin{
+  
+  public:
+    InputPin();
+    getAndSetFalseHasChanged(); // send the initilization handshake
+    nunchuck_get_data();
+    int x, y, z;
+  private:
+};
+#endif

@@ -59,7 +59,7 @@ int stato = 0, lettura = 0, x, y, z;
 void loop() {
   uint8_t howManyBytesToRead = 6;
   readFrom( DATAX0, howManyBytesToRead, _buff); //read the acceleration data from the ADXL345
-  
+  Wire.write(0);
   if (lastUp + 1000 <= millis()){
     Serial.print("x: ");
     Serial.print( x );
@@ -95,20 +95,20 @@ void writeTo(byte address, byte val) {
 
 // Reads num bytes starting from address register on device in to _buff array
 void readFrom(byte address, int num, byte _buff[]) {
-  if ( stato == 0 && Wire.asincBeginTransmission(DEVICE) ){ // start transmission to device 
+  if ( stato == 0 && Wire.askBeginTransmission(DEVICE) ){ // start transmission to device 
     Wire.write(address);             // sends address to read from
-    Wire.asincEndTransmission(true);         // end transmission
+    Wire.askEndTransmission(true);         // end transmission
     stato = 1;
   }
 
-  if ( stato == 1 && Wire.asincBeginTransmission(DEVICE) ){ // start transmission to device
-    Wire.asincRequestFrom(DEVICE, num);    // request 6 bytes from device
+  if ( stato == 1 && Wire.askBeginTransmission(DEVICE) ){ // start transmission to device
+    Wire.askRequestFrom(DEVICE, num);    // request 6 bytes from device
     stato = 2;
   }
 
-  if (stato == 2 && Wire.asincReady(num-1) ){
-    Wire.asincRead(_buff, num-1); // receive a bytes
-    Wire.asincEndTransmission(true);         // end transmission
+  if (stato == 2 && Wire.askAvailable(num-1) ){
+    Wire.askRead(_buff, num-1); // receive a bytes
+    Wire.askEndTransmission(true);         // end transmission
     lettura = 1;
     stato = 0;
 //    Serial.print("lettura ");
